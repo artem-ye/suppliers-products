@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import Navbar from './components/navbar';
+import SearchBar from './components/searchBar.jsx';
 import Products from './components/products';
+
+const SearchBarDropDownItemContent = ({allSuppliersItem}) => (
+    <>
+        {allSuppliersItem.supplier}<span className="badge rounded-pill bg-light text-dark">{allSuppliersItem.productsCount} sku</span>
+    </> 
+);
 
 function App() {    
     const [error, setError] = useState(null);
@@ -49,10 +55,19 @@ function App() {
                 <span className="visually-hidden">Загрузка...</span>
             </div>
         );
-    } else {
+    } else {                        
+
         return (
             <>
-                <Navbar allSuppliers={allSuppliers} onSupplierChange={onSupplierChange}/>
+                <SearchBar 
+                    onSupplierChange={onSupplierChange}
+                    allSuppliers={allSuppliers.map(
+                        e => ({
+                            ...e, 
+                            content: <SearchBarDropDownItemContent allSuppliersItem={e}/>                                
+                        })
+                    )} 
+                />
                 
                 <Products
                     suppliersProducts={suppliersProducts}
