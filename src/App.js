@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import SearchBar from './components/searchBar.jsx';
 import Products from './components/products';
+import SuppliersCatalogueModel from './model/model';
 
 const SearchBarDropDownItemContent = ({allSuppliersItem}) => (
     <>
@@ -9,7 +10,13 @@ const SearchBarDropDownItemContent = ({allSuppliersItem}) => (
     </> 
 );
 
-function App() {    
+function App() {  
+    // SuppliersCatalogue.fetchData();
+    const modelSuppliersCatalogue = new SuppliersCatalogueModel();
+    modelSuppliersCatalogue.init();
+
+    
+
     const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     
