@@ -10,8 +10,7 @@ const SearchBarDropDownItemContent = ({allSuppliersItem}) => (
     </> 
 );
 
-function App() {  
-    // SuppliersCatalogue.fetchData();
+function App() {      
     const modelSuppliersCatalogue = new SuppliersCatalogueModel();
     modelSuppliersCatalogue.init();
 
