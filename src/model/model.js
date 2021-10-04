@@ -1,3 +1,7 @@
+function supplierToHashCode(s){
+    return 'sup'+s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);                     
+}
+
 class SuppliersCatalogueModel {
     JSON_URL = '/suppliers_products.json';
     
@@ -18,20 +22,15 @@ class SuppliersCatalogueModel {
     
             this.suppliers = data.map((el, index) => {                        
                 return {
-                    supplier: el.supplier,
-                    id:  encodeURIComponent(el.supplier),                
+                    supplier: el.supplier,                    
+                    id: supplierToHashCode(el.supplier).toString(),
                     productsCount: el.products.length
                 }            
             });
            
             this.suppliersProducts = data.reduce((acc, el) => {               
-                return {...acc, [encodeURIComponent(el.supplier)]: el.products}                
-            }, {});                                   
-
-            // const supp = this.suppliers[0];
-            // const prods = this.getSupplierProducts(supp);
-            // console.log(prods[0]);
-            // console.log(this.getProductsTags(prods));
+                return {...acc, [supplierToHashCode(el.supplier)]: el.products}                
+            }, {});                                               
     
             resolve();           
         });
@@ -39,9 +38,19 @@ class SuppliersCatalogueModel {
     
     getSuppliers() {
         return this.suppliers;
-    }    
+    }
+    
+    getSupplierById(suppId) {
+        if (!this.suppliers) {            
+            return undefined;
+        };
 
-    getSupplierProducts(supplier) {
+        return this.suppliers.find(e => e.id === suppId);
+    }
+
+    getSupplierProducts(supplier) {              
+        if (!supplier) return undefined;
+       
         const products = this.suppliersProducts[supplier.id];
         return products.map(product => {
             const title = product.title.slice(product.title.indexOf('/')+1);
