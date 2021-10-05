@@ -74,6 +74,10 @@ class SuppliersCatalogueModel {
 
         return Object.keys(list).sort();
     }
+
+    getProductPreviewImageURL(product) {
+        return `http://img.nothingshop.com/images/${product.sku}/default/preview.jpg`;
+    }
 }
 
 export default SuppliersCatalogueModel;

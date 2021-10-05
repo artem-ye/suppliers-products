@@ -14,10 +14,8 @@ const SearchBarDropDownItemContent = ({allSuppliersItem}) => (
 const ProductsCatalogue = () => {
     const supplierId = useParams().supplierId;
 
-    console.log('Sup ID is', supplierId);
-
-
-    // const model = new SuppliersCatalogueModel();    
+    // console.log('Sup ID is', supplierId);
+    
     const [model, setModel] = useState(new SuppliersCatalogueModel());
 
     const [error, setError] = useState(null);
@@ -38,11 +36,6 @@ const ProductsCatalogue = () => {
                 setModel(model);
                 setAllSuppliers(model.suppliers);
                 setIsLoaded(true);
-                
-
-
-                // console.log('Loaded', model.suppliers[0]);
-
             }).catch(err => {
                 setIsLoaded(true);
                 setError(err);
@@ -77,9 +70,7 @@ const ProductsCatalogue = () => {
                     )} 
                 />
                 
-                <Products
-                    // suppliersProducts={suppliersProducts}
-                    // currentSupplierIndex={currentSupplierIndex}  
+                <Products                    
                     supplierId={supplierId}                    
                     model={model}
                 />                   
