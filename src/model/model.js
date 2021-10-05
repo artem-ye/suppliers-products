@@ -1,5 +1,5 @@
-function supplierToHashCode(s){
-    return 'sup'+s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);                     
+function strToHashCode(s){
+    return s.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);
 }
 
 class SuppliersCatalogueModel {
@@ -15,22 +15,31 @@ class SuppliersCatalogueModel {
     }
 
     async fetchData() {
-        return new Promise(async (resolve, reject) => {
-            
+        return new Promise(async (resolve, reject) => {            
             const res = await fetch(this.JSON_URL).catch(err => reject(err));
-            const data = await res.json().catch(err => reject(err));
-    
-            this.suppliers = data.map((el, index) => {                        
-                return {
+            const data = await res.json().catch(err => reject(err));                                             
+
+            // Convert API data
+            const {suppliers, suppliersProducts} = data.reduce((acc, el) => {
+                const {suppliers, suppliersProducts} = {...acc};
+                const supplierId = 'sup' + strToHashCode(el.supplier).toString();
+
+                suppliers.push({
                     supplier: el.supplier,                    
-                    id: supplierToHashCode(el.supplier).toString(),
+                    id: supplierId,
                     productsCount: el.products.length
-                }            
+                });
+
+                suppliersProducts[supplierId] = el.products;
+
+                return {suppliers, suppliersProducts};
+            }, {
+                suppliers: [],
+                suppliersProducts: {}
             });
-           
-            this.suppliersProducts = data.reduce((acc, el) => {               
-                return {...acc, [supplierToHashCode(el.supplier)]: el.products}                
-            }, {});                                               
+
+            this.suppliers = suppliers;
+            this.suppliersProducts = suppliersProducts;
     
             resolve();           
         });

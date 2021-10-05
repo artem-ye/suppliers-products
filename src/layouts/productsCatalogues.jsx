@@ -80,7 +80,7 @@ const ProductsCatalogue = () => {
                 <Products
                     // suppliersProducts={suppliersProducts}
                     // currentSupplierIndex={currentSupplierIndex}  
-                    supplier={model.getSupplierById(supplierId)}                    
+                    supplierId={supplierId}                    
                     model={model}
                 />                   
             </>
