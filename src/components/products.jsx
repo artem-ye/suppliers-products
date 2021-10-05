@@ -3,7 +3,6 @@ import ProductCard from './productCard';
 import ProductsTags from './productsTags';
 
 const PAGINATION_PAGE_SIZE = 6 * 20;
-// const PAGINATION_PAGE_SIZE = 6;
 
 const Products = ({supplierId, model}) => {    
     const [paginationCurrentPageNum, setPaginationCurrentPageNum] = useState(1);
@@ -26,14 +25,14 @@ const Products = ({supplierId, model}) => {
     
     const TOTAL_PRODUCTS_COUNT = products.length;    
     const cropProducts = products.slice(0, paginationCurrentPageNum * PAGINATION_PAGE_SIZE);
-    const DISPLAY_PRODUCTS_COUNT = cropProducts.length;
+    const PRODUCTS_DISPLAYED = cropProducts.length;
     
     const handlePaginateNextPage = () => {
         setPaginationCurrentPageNum(paginationCurrentPageNum + 1);
     }     
 
     return (        
-        DISPLAY_PRODUCTS_COUNT > 0 &&
+        PRODUCTS_DISPLAYED > 0 &&
         <>
             <div className="container m-2 d-flex flex-wrap">
                 <ProductsTags tagsArray={productsTags}/>
@@ -50,13 +49,13 @@ const Products = ({supplierId, model}) => {
                 }
             </div>
 
-           {DISPLAY_PRODUCTS_COUNT < TOTAL_PRODUCTS_COUNT &&
+           {PRODUCTS_DISPLAYED < TOTAL_PRODUCTS_COUNT &&
                 <div className="w-100 d-flex justify-content-center">
                     <button 
                         className="btn btn-outline-secondary" 
                         onClick={handlePaginateNextPage}
                         style={{'boxShadow': 'none'}}
-                    >{DISPLAY_PRODUCTS_COUNT} из {TOTAL_PRODUCTS_COUNT} показать больше... </button>
+                    >{PRODUCTS_DISPLAYED} из {TOTAL_PRODUCTS_COUNT} показать больше... </button>
                 </div>
             }
         </>
