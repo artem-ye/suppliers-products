@@ -25,7 +25,7 @@ class SuppliersCatalogueModel {
                 const supplierId = 'sup' + strToHashCode(el.supplier).toString();
 
                 suppliers.push({
-                    supplier: el.supplier,                    
+                    supplier: el.supplier.trim(),                    
                     id: supplierId,
                     productsCount: el.products.length
                 });
@@ -38,7 +38,7 @@ class SuppliersCatalogueModel {
                 suppliersProducts: {}
             });
 
-            this.suppliers = suppliers;
+            this.suppliers = suppliers.sort((a, b) => a.supplier > b.supplier ? 1 : -1);
             this.suppliersProducts = suppliersProducts;
     
             resolve();           
@@ -47,6 +47,12 @@ class SuppliersCatalogueModel {
     
     getSuppliers() {
         return this.suppliers;
+    }
+
+    getSuppliersAsOptionsArray() {
+        return this.suppliers.map(sup => {
+            return {value: sup.id, label: sup.supplier};
+        });
     }
     
     getSupplierById(suppId) {

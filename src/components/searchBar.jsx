@@ -1,67 +1,75 @@
 import React, {useState} from 'react';
 
-const DropDownItem = ({handleDropDownListItemSelect, listItem, isActive=false}) => {   
-    //const {supplier, productsCount} = listItem;
-
+const DropDownItem = ({handleDropDownListItemSelect, listItem, isActive=false}) => {      
+    
     return (
         <button            
             className={'list-group-item list-group-item-action cursor-default' + (isActive ? ' active-light' : '')}                                
             onClick={
-                () => { handleDropDownListItemSelect(listItem) }
-            }                
+                () => {                                         
+                    handleDropDownListItemSelect({value: listItem.value, label: listItem.label});
+                }
+            }
+            value={listItem.id}                            
         >            
-            {listItem.content}
+            {listItem.label}
         </button>
     );
 }
 
-const SearchBar = ({allSuppliers, onSupplierChange}) => {    
-    const [inputValue, setInputValue] = useState('');
-    const [dropdownItems, setFilteredItems] = useState([]);    
-    const [showDropDown, setShowDropDown] = useState(false);
+const SearchBar = ({options, defaultOption, onChange}) => {            
+    const [inputValue, setInputValue] = useState(defaultOption.label || '');
+    const [dropdownItems, setDropdownItems] = useState(options || []);    
+    const [showDropDown, setShowDropDown] = useState(false);    
     
-    // const inputRef = useRef(null);        
-    // const ACTIVE_DROP_DOWN_ITEM_INDEX_INITIAL_STATE = -1;
-    // const [activeDropDownItemIndex, setActiveDropDownItemIndex] = useState(ACTIVE_DROP_DOWN_ITEM_INDEX_INITIAL_STATE);
-    
-    const handlerSearchInputChange = (event) => {       
-        // setActiveDropDownItemIndex(ACTIVE_DROP_DOWN_ITEM_INDEX_INITIAL_STATE);
-        setInputValue(event.target.value);
-        // console.log('change', event.target.value);
-        const value = event.target.value.toLowerCase().trim();        
-        const newStateFilteredItems = value.length < 1 
-            ? [] 
-            : allSuppliers.filter(
-                ({supplier}) => supplier.toLowerCase().includes(value)
-            ).sort((a, b) => a.supplier > b.supplier ? 1 : -1);
-        
-        setFilteredItems(newStateFilteredItems);                
-        setShowDropDown(newStateFilteredItems.length > 0);
+    // -----------------------------------------------------
+    // Helper functions    
 
-        // if (!value) {            
-        //     onSupplierChange(-1);
-        // }
-    }  
+    const applyFilter = (filteredOptions) => {
+        setDropdownItems(filteredOptions);                
+        setShowDropDown(filteredOptions.length > 0);
+    }   
 
-    const handlerSubmit = (event) => {        
-        event.preventDefault();        
+    // -----------------------------------------------------
+    //  Select / submit event handlers    
 
-        // if (dropdownItems.length) {
-        //     const supplierIndex = (activeDropDownItemIndex === ACTIVE_DROP_DOWN_ITEM_INDEX_INITIAL_STATE ? 0 : activeDropDownItemIndex);
-        //     setInputValue(dropdownItems[supplierIndex].supplier);
-        //     onSupplierChange(dropdownItems[supplierIndex].id);
-        // }  else {
-        //     onSupplierChange(-1);
-        // }   
-        
-        setShowDropDown(false);        
+    const handlerSubmit = (event) => {           
+        event.preventDefault();                      
+        setShowDropDown(false);                              
+
+        if (!inputValue.trim()) {
+            onChange({});            
+        } else {            
+            onChange(dropdownItems.length > 0 ? dropdownItems[0] : {});
+        }                       
     }
 
     const handleDropDownListItemSelect = (dropdownItem) => {                          
-        setInputValue(dropdownItem.supplier);
-        // setActiveDropDownItemIndex(dropDownItemIndex); 
-        // inputRef.current.focus();      
-    }              
+        setInputValue(dropdownItem.label);
+        setDropdownItems(dropdownItem);        
+        onChange(dropdownItem);         
+    }        
+    
+    // -----------------------------------------------------
+    // List filtering event handlers    
+
+    const handleInputClick = () => {
+        if (!inputValue)  {
+            setInputValue(' ');
+            applyFilter(options);        
+        }
+    }
+
+    const handlerSearchInputChange = (event) => {               
+        setInputValue(event.target.value);        
+        const value = event.target.value.toLowerCase().trim();        
+
+        const filteredOptions = (!value) 
+            ? []
+            : options.filter(({label}) => label.toLowerCase().includes(value));
+
+        applyFilter(filteredOptions);        
+    }  
 
     return ( 
         <form className="bg-light w-100 search-nav" onSubmit={handlerSubmit}>
@@ -72,24 +80,20 @@ const SearchBar = ({allSuppliers, onSupplierChange}) => {
                     type="search" 
                     placeholder="Search by factory" 
                     aria-label="Search"
-                    onChange={handlerSearchInputChange}                               
+                    onChange={handlerSearchInputChange}
+                    onClick={handleInputClick}                               
                     value={inputValue}
-                    // ref={inputRef}
                 />                
             </div>  
 
             {dropdownItems.length > 0 &&
                 <div className={"form-control search-nav__dropdown" + (showDropDown ? ' active' : '') }>                
                     <ul className="list-group list-group-flush">
-                        {dropdownItems.map((item, index) => {
-                            // const {supplier, id, productsCount} = el;        
+                        {dropdownItems.map((item, index) => {                            
                             return <DropDownItem
                                 handleDropDownListItemSelect={handleDropDownListItemSelect}
                                 key={index}
-                                listItem={item}
-                                // supplier={supplier}
-                                // productsCount={productsCount}
-                                // dropDownItemIndex={index}
+                                listItem={item}                            
                                 isActive={false}
                             />;    
                         })}

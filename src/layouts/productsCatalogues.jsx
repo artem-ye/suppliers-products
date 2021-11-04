@@ -3,45 +3,49 @@ import React, { useState, useEffect } from 'react';
 import SearchBar from '../components/searchBar.jsx';
 import Products from '../components/products';
 import SuppliersCatalogueModel from '../model/model';
-import { useParams } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 
-const SearchBarDropDownItemContent = ({allSuppliersItem}) => (
-    <>
-        {allSuppliersItem.supplier}<span className="badge rounded-pill bg-light text-dark">{allSuppliersItem.productsCount} sku</span>
-    </> 
-);
+
+// const SearchBarDropDownItemContent = ({allSuppliersItem}) => (
+//     <>
+//         {allSuppliersItem.supplier}<span className="badge rounded-pill bg-light text-dark">{allSuppliersItem.productsCount} sku</span>
+//     </> 
+// );
 
 const ProductsCatalogue = () => {
-    const supplierId = useParams().supplierId;
-
-    // console.log('Sup ID is', supplierId);
+    const [supplierId, setSupplierId] = useState(useParams().supplierId);
+    const history = useHistory();
     
     const [model, setModel] = useState(new SuppliersCatalogueModel());
-
     const [error, setError] = useState(null);
-    const [isLoaded, setIsLoaded] = useState(false);
-    
-    // const [suppliersProducts, setSuppliersProducts] = useState([]);
-
-    const [currentSupplierIndex, setCurrentSupplierIndex] = useState(-1);
+    const [isLoaded, setIsLoaded] = useState(false);          
     const [allSuppliers, setAllSuppliers] = useState([]);
-    const onSupplierChange = (supplierId) => {        
-        setCurrentSupplierIndex(supplierId);        
-    };
+    
 
-    useEffect(() => {
+    useEffect(() => {        
         model.init()
             .then(() => {
                 setIsLoaded(false);                
-                setModel(model);
-                setAllSuppliers(model.suppliers);
+                setModel(model);                                                
+                const suppliers = model.suppliers.map(sup => {                    
+                    return {label: sup.supplier, value: sup.id};
+                });
+                setAllSuppliers(suppliers);
                 setIsLoaded(true);
             }).catch(err => {
                 setIsLoaded(true);
                 setError(err);
             });
-        
-    }, []);
+    }, []);    
+  
+  
+    const handleSupplierChange = (supplier) => {
+        if (!supplier.value) {
+            return;
+        }
+        history.push('/'+supplier.value);        
+        setSupplierId(supplier.value);
+    }
     
     if (error) {
         return <div>Ошибка: {error.message}</div>;
@@ -51,25 +55,15 @@ const ProductsCatalogue = () => {
                 <span className="visually-hidden">Загрузка...</span>
             </div>
         );
-    } else {
-        
-        console.log('Is loaded: ', isLoaded);
-        console.log(model.suppliers[0].id);
-        console.log(model.suppliers[1].id);
-        console.log(model.suppliers[2].id);
+    } else {                
 
         return (
             <>
                 <SearchBar 
-                    onSupplierChange={onSupplierChange}
-                    allSuppliers={allSuppliers.map(
-                        e => ({
-                            ...e, 
-                            content: <SearchBarDropDownItemContent allSuppliersItem={e}/>                                
-                        })
-                    )} 
-                />
-                
+                    onChange={handleSupplierChange}
+                    options={allSuppliers}
+                    defaultOption={allSuppliers.find(el => el.value === supplierId)}
+                />               
                 <Products                    
                     supplierId={supplierId}                    
                     model={model}
