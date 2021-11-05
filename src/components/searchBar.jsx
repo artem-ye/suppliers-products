@@ -18,7 +18,7 @@ const DropDownItem = ({handleDropDownListItemSelect, listItem, isActive=false}) 
 }
 
 const SearchBar = ({options, defaultOption, onChange}) => {            
-    const [inputValue, setInputValue] = useState(defaultOption.label || '');
+    const [inputValue, setInputValue] = useState(defaultOption?.label || '');
     const [dropdownItems, setDropdownItems] = useState(options || []);    
     const [showDropDown, setShowDropDown] = useState(false);    
     
@@ -54,10 +54,12 @@ const SearchBar = ({options, defaultOption, onChange}) => {
     // List filtering event handlers    
 
     const handleInputClick = () => {
-        if (!inputValue)  {
-            setInputValue(' ');
-            applyFilter(options);        
+        if (!inputValue.trim())  {                                  
+            applyFilter( showDropDown ? [] : options);
+        } else {
+            setShowDropDown(prev => !prev);
         }
+        
     }
 
     const handlerSearchInputChange = (event) => {               
@@ -65,7 +67,7 @@ const SearchBar = ({options, defaultOption, onChange}) => {
         const value = event.target.value.toLowerCase().trim();        
 
         const filteredOptions = (!value) 
-            ? []
+            ? options
             : options.filter(({label}) => label.toLowerCase().includes(value));
 
         applyFilter(filteredOptions);        

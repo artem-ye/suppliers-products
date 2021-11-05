@@ -47,13 +47,7 @@ class SuppliersCatalogueModel {
     
     getSuppliers() {
         return this.suppliers;
-    }
-
-    getSuppliersAsOptionsArray() {
-        return this.suppliers.map(sup => {
-            return {value: sup.id, label: sup.supplier};
-        });
-    }
+    }   
     
     getSupplierById(suppId) {
         if (!this.suppliers) {            

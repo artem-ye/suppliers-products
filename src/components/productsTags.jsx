@@ -14,7 +14,7 @@ import React, { useEffect, useState } from 'react';
 //     }
 // }
 
-const ProductsTags = ({tagsArray}) => {           
+const ProductsTags = ({tagsArray, onChange}) => {
     const [data, setData] = useState(tagsArray.map((el, index) => 
         ({label: el, id: el+'_'+index+1, checked: true, index})
     ));
@@ -24,42 +24,53 @@ const ProductsTags = ({tagsArray}) => {
             (el, index) => ({label: el, id: el+'_'+index+1, checked: true, index})
         );
         setData(newData);
-    }, [tagsArray])
+    }, [tagsArray]);
 
-    const handleChange = (el) => {
+    const submitChanges = (data) => {
+        const selectedItems = data.filter(el => el.checked);        
+        if (selectedItems.length > 0) {            
+            onChange(selectedItems.map(el => el.label));
+        }
+    }
+  
+    const handleChangeSelection = (el) => {
         const newData = [...data];
         newData[el.index].checked = !newData[el.index].checked;
         setData(newData);
+        submitChanges(newData);       
     }   
     
-    const handleClear = () => {        
+    const handleResetSelection = () => {        
         const toggledChecked = !!(data.find(e => !e.checked));        
-        setData(prev => prev.map(e => ({...e, checked: toggledChecked})));
+        const newState = data.map(e => ({...e, checked: toggledChecked}));
+        setData(newState);
+        if (toggledChecked) {
+            submitChanges(newState);
+        }
     }
-
-    const component = data.map((el) => (
-        <div key={el.id} className="form-check form-check-inline" style={{fontSize: '0.8em'}}>
-            <input className="form-check-input" type="checkbox" id={el.id} checked={el.checked} onChange={() => handleChange(el)}/>
-            <label className="form-check-label" htmlFor={el.id}>{el.label}</label>
-        </div>
-    ));
-
-    if (component.length > 1) {
-        component.unshift(
-            // <div key={component.length} className="form-check form-check-inline" style={{fontSize: '0.8em'}}>
-            //     <span class="badge bg-primary">Primary</span>
-            // </div>      
-            
-            // <span class="form-check form-check-inline form-check-label badge bg-primary">Primary</span>
-            <div key={component.length+1} className="form-check form-check-inline ps-0" style={{fontSize: '0.8em'}}>
-                <span className="badge bg-danger" role="button" onClick={handleClear}>Clear</span>
-            </div>
-            
-        )
-    }
-
-    return component; 
     
+    const isMoreThenOneTagProvided = data.length > 1;
+    
+    return <>
+        {
+            isMoreThenOneTagProvided &&
+            <div key={data.length+1} className="form-check form-check-inline ps-0" style={{fontSize: '0.8em'}}>
+                <span className="badge bg-danger" role="button" onClick={handleResetSelection}>Clear</span>
+            </div>
+        }
+        {
+            data.map((el) => (
+                <div key={el.id} className="form-check form-check-inline" style={{fontSize: '0.8em'}}>
+                    <input 
+                        className="form-check-input" type="checkbox" 
+                        id={el.id} checked={el.checked} onChange={() => handleChangeSelection(el)}
+                        disabled={!isMoreThenOneTagProvided}
+                    />                    
+                    <label className="form-check-label" htmlFor={el.id}>{el.label}</label>
+                </div>
+            ))
+        }
+    </>; 
 }
  
 export default ProductsTags;
