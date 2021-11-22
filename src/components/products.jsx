@@ -1,59 +1,98 @@
 import React, {useState, useEffect} from 'react';
-import ProductImage from './productImage';
+import ProductCard from './productCard';
+import ProductsTags from './productsTags';
 
-const PAGINATION_PAGE_SIZE = 6 * 20;
-// const PAGINATION_PAGE_SIZE = 6;
+const PAGINATION_PAGE_SIZE = 20 * 6;
+const DATA_INITIAL_STATE = {
+    products: [],
+    productsTags: []
+};
+const FILTER_INITIAL_STATE = {};
 
-const productImageURL = (productSku) => {
-    return `http://img.nothingshop.com/images/${productSku}/default/preview.jpg`
-}
-
-const Products = ({suppliersProducts, currentSupplierIndex}) => {    
+const Products = ({supplierId, model}) => {    
     const [paginationCurrentPageNum, setPaginationCurrentPageNum] = useState(1);
+    const [filterOptions, setFilterOptions] = useState(FILTER_INITIAL_STATE);    
+    const [data, setData] = useState(DATA_INITIAL_STATE);
     
-    const products = !~currentSupplierIndex ? [] 
-        : suppliersProducts[currentSupplierIndex].products.sort((a, b) => a.sku > b.sku ? 1 : -1);
-    const TOTAL_PRODUCTS_COUNT = products.length;
-    
-    const cropProducts = products.slice(0, paginationCurrentPageNum * PAGINATION_PAGE_SIZE);
-    const DISPLAY_PRODUCTS_COUNT = cropProducts.length;
-
     useEffect(() => {
         setPaginationCurrentPageNum(1);
-    }, [currentSupplierIndex]);
+        setFilterOptions(FILTER_INITIAL_STATE);
+
+        const dataNewState = {...DATA_INITIAL_STATE};
+        const supplier = supplierId && model.getSupplierById(supplierId);        
+
+        if (supplier) {
+            const products = model.getSupplierProducts(model.getSupplierById(supplierId));            
+            dataNewState.products = products;
+            dataNewState.productsTags = model.getProductsTags(products);            
+        }
+
+        setData(dataNewState);
+    }, [supplierId, model]);    
+    
+    if (data.products.length === 0) {        
+        return null;
+    };    
+
+    const filterProducts = (products) => {  
+        if (!Array.isArray(products)) {
+            return products
+        }        
+        
+        if (filterOptions.tags && filterOptions.tags.length > 0) {                          
+            const res =  products.filter(prod => {
+                return filterOptions.tags.includes(prod.title);
+            });                
+            return res;
+        }        
+
+        return products;
+    };
+    
+    
+    const filteredProducts = filterProducts(data.products);
+    
+    const TOTAL_PRODUCTS_COUNT = filteredProducts.length;
+    // const PAGINATION_PAGE_NUM = Math.ceil(TOTAL_PRODUCTS_COUNT / PAGINATION_PAGE_SIZE);
+    // const cropProducts = filteredProducts.slice(0, PAGINATION_PAGE_NUM * PAGINATION_PAGE_SIZE);    
+    const cropProducts = filteredProducts.slice(0, paginationCurrentPageNum * PAGINATION_PAGE_SIZE);    
+    const PRODUCTS_DISPLAYED = cropProducts.length;
+    
+    // console.log('products on page', PRODUCTS_DISPLAYED, 'page num', PAGINATION_PAGE_NUM, 'products on page', PAGINATION_PAGE_SIZE);
     
     const handlePaginateNextPage = () => {
         setPaginationCurrentPageNum(paginationCurrentPageNum + 1);
-    }
-    
-    const renderProduct = (product, id) => {
-        return (            
-            <div key={id} className="card m-1 card-width">
-                <div className="h-100 m-1">
-                    <ProductImage src={productImageURL(product.sku)}/>
-                </div>
-                <div className="card-body">
-                    <h5 className="card-title">{product.sku}</h5>
-                    <p className="card-text card-p">{product.title}</p>
-                </div>
-            </div>                            
-        );
-    };        
+    };
+
+    const handleFilterChange = (filterType, data) => {        
+        setFilterOptions(prev => ({...prev, [filterType]: data}));        
+    };
 
     return (        
-        DISPLAY_PRODUCTS_COUNT > 0 &&
+        PRODUCTS_DISPLAYED > 0 &&
         <>
+            <div className="container m-2 d-flex flex-wrap">
+                <ProductsTags tagsArray={data.productsTags} onChange={(data) => handleFilterChange('tags', data)}/>
+            </div>
             <div className="row row-cols-4 m-2">
-                {cropProducts.map(renderProduct)}
+                {                    
+                    cropProducts.map((product, key) => (
+                        <ProductCard 
+                            key={key}
+                            product={product} 
+                            productImageURL={model.getProductPreviewImageURL(product)}
+                        />
+                    ))
+                }
             </div>
 
-           {DISPLAY_PRODUCTS_COUNT < TOTAL_PRODUCTS_COUNT &&
+           {PRODUCTS_DISPLAYED < TOTAL_PRODUCTS_COUNT &&
                 <div className="w-100 d-flex justify-content-center">
                     <button 
                         className="btn btn-outline-secondary" 
                         onClick={handlePaginateNextPage}
                         style={{'boxShadow': 'none'}}
-                    >{DISPLAY_PRODUCTS_COUNT} из {TOTAL_PRODUCTS_COUNT} показать больше... </button>
+                    >{PRODUCTS_DISPLAYED} из {TOTAL_PRODUCTS_COUNT} показать больше... </button>
                 </div>
             }
         </>
