@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import { useSuppliersCatalogueModel } from '../model/useSuppliersCatalogueModel';
 import ProductCard from './productCard';
 import ProductsTags from './productsTags';
 
@@ -9,7 +10,9 @@ const DATA_INITIAL_STATE = {
 };
 const FILTER_INITIAL_STATE = {};
 
-const Products = ({supplierId, model}) => {    
+const Products = ({supplierId}) => {    
+    const {model} = useSuppliersCatalogueModel();
+
     const [paginationCurrentPageNum, setPaginationCurrentPageNum] = useState(1);
     const [filterOptions, setFilterOptions] = useState(FILTER_INITIAL_STATE);    
     const [data, setData] = useState(DATA_INITIAL_STATE);
@@ -30,9 +33,11 @@ const Products = ({supplierId, model}) => {
         setData(dataNewState);
     }, [supplierId, model]);    
     
-    if (data.products.length === 0) {        
+
+    if (data.products.length === 0) { 
+        console.log('empty data');       
         return null;
-    };    
+    };   
 
     const filterProducts = (products) => {  
         if (!Array.isArray(products)) {

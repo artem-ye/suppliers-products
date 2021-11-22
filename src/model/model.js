@@ -41,7 +41,7 @@ class SuppliersCatalogueModel {
             this.suppliers = suppliers.sort((a, b) => a.supplier > b.supplier ? 1 : -1);
             this.suppliersProducts = suppliersProducts;
     
-            resolve();           
+            resolve(this);           
         });
     };
     

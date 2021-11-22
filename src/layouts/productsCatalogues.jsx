@@ -4,6 +4,7 @@ import SearchBar from '../components/searchBar.jsx';
 import Products from '../components/products';
 import SuppliersCatalogueModel from '../model/model';
 import { useHistory, useParams } from 'react-router';
+import { SuppliersCatalogueModelProvider } from '../model/useSuppliersCatalogueModel.js';
 
 
 // const SearchBarDropDownItemContent = ({allSuppliersItem}) => (
@@ -58,7 +59,7 @@ const ProductsCatalogue = () => {
     } else {                
 
         return (
-            <>
+            <SuppliersCatalogueModelProvider>
                 <SearchBar 
                     onChange={handleSupplierChange}
                     options={allSuppliers}
@@ -68,7 +69,7 @@ const ProductsCatalogue = () => {
                     supplierId={supplierId}                    
                     model={model}
                 />                   
-            </>
+            </SuppliersCatalogueModelProvider>
         );
     }  
 }
