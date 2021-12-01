@@ -1,20 +1,35 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-// const useRandomColors = () => {
-//     const styles = ['bg-light text-dark', 'bg-secondary',  'bg-warning text-dark', 'bg-dark', 'bg-info text-dark'];
-//     let lastVal = undefined;
+const containerStyles = {
+    maxHeight: '90px', 
+    overflowY: 'hidden'   
+};
 
-//     return () => {
-//         const stylesArray = styles.filter(val => val !== lastVal);
-//         const min = 0;
-//         const max = stylesArray.length-1;
-//         const index  = Math.floor(Math.random() * (max - min + 1)) + min;        
-//         lastVal = stylesArray[index];
-//         return lastVal;
-//     }
-// }
+const useOverflowDetection = (ref) => {
+    const [isOverflow, setIsOverflow] = useState(false);
+
+    useEffect(() => {
+        if (ref) {
+            console.log('Counting....');
+            const el = ref.current;
+            const refIsOverflown = (el.scrollHeight > el.clientHeight || el.scrollWidth > el.clientWidth);
+            
+            if (refIsOverflown !== isOverflow) {
+                setIsOverflow(refIsOverflown);
+            }           
+        }
+    });
+
+    return isOverflow;
+};
 
 const ProductsTags = ({tagsArray, onChange}) => {
+    const containerRef = useRef(null);
+
+    const isContainerOverflowed = useOverflowDetection(containerRef);
+    console.log('Is over', isContainerOverflowed);
+
+
     const [data, setData] = useState(tagsArray.map((el, index) => 
         ({label: el, id: el+'_'+index+1, checked: true, index})
     ));
@@ -23,8 +38,8 @@ const ProductsTags = ({tagsArray, onChange}) => {
         const newData = tagsArray.map(
             (el, index) => ({label: el, id: el+'_'+index+1, checked: true, index})
         );
-        setData(newData);
-    }, [tagsArray]);
+        setData(newData);        
+    }, [tagsArray]);    
 
     const submitChanges = (data) => {
         const selectedItems = data.filter(el => el.checked);        
@@ -51,26 +66,36 @@ const ProductsTags = ({tagsArray, onChange}) => {
     
     const isMoreThenOneTagProvided = data.length > 1;
     
-    return <>
-        {
-            isMoreThenOneTagProvided &&
-            <div key={data.length+1} className="form-check form-check-inline ps-0" style={{fontSize: '0.8em'}}>
-                <span className="badge bg-danger" role="button" onClick={handleResetSelection}>Clear</span>
+    return (
+        <>
+            <div style={containerStyles} ref={containerRef}>
+                {
+                    isMoreThenOneTagProvided &&
+                    <div key={data.length+1} className="form-check form-check-inline ps-0" style={{fontSize: '0.8em'}}>
+                        <span className="badge bg-danger" role="button" onClick={handleResetSelection}>Clear</span>
+                    </div>
+                }
+                {
+                    data.map((el) => (
+                        <div key={el.id} className="form-check form-check-inline" style={{fontSize: '0.8em'}}>
+                            <input 
+                                className="form-check-input" type="checkbox" 
+                                id={el.id} checked={el.checked} onChange={() => handleChangeSelection(el)}
+                                disabled={!isMoreThenOneTagProvided}
+                            />                    
+                            <label className="form-check-label" htmlFor={el.id}>{el.label}</label>
+                        </div>
+                    ))
+                }                         
             </div>
-        }
-        {
-            data.map((el) => (
-                <div key={el.id} className="form-check form-check-inline" style={{fontSize: '0.8em'}}>
-                    <input 
-                        className="form-check-input" type="checkbox" 
-                        id={el.id} checked={el.checked} onChange={() => handleChangeSelection(el)}
-                        disabled={!isMoreThenOneTagProvided}
-                    />                    
-                    <label className="form-check-label" htmlFor={el.id}>{el.label}</label>
-                </div>
-            ))
-        }
-    </>; 
+            {isContainerOverflowed && 
+                <span className="badge bg-primary m-auto fw-light" role="button" onClick={handleResetSelection}>
+                    <i className="bi bi-chevron-double-down"/>&nbsp;
+                    <span className="m-2">Показать весь список</span>
+                </span>
+            }
+        </>
+    ); 
 }
  
 export default ProductsTags;

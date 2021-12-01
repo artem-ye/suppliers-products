@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import { useSuppliersCatalogueModel } from '../model/useSuppliersCatalogueModel';
-import ProductCard from './productCard';
-import ProductsTags from './productsTags';
+import { useSuppliersCatalogueModel } from '../../model/useSuppliersCatalogueModel';
+import ProductCard from '../productCard';
+import ProductsTags from '../productsTags';
 
 const PAGINATION_PAGE_SIZE = 20 * 6;
 const DATA_INITIAL_STATE = {
@@ -10,7 +10,7 @@ const DATA_INITIAL_STATE = {
 };
 const FILTER_INITIAL_STATE = {};
 
-const Products = ({supplierId}) => {    
+const ProductsList = ({supplierId}) => {    
     const {model} = useSuppliersCatalogueModel();
 
     const [paginationCurrentPageNum, setPaginationCurrentPageNum] = useState(1);
@@ -34,8 +34,7 @@ const Products = ({supplierId}) => {
     }, [supplierId, model]);    
     
 
-    if (data.products.length === 0) { 
-        console.log('empty data');       
+    if (data.products.length === 0) {        
         return null;
     };   
 
@@ -57,13 +56,9 @@ const Products = ({supplierId}) => {
     
     const filteredProducts = filterProducts(data.products);
     
-    const TOTAL_PRODUCTS_COUNT = filteredProducts.length;
-    // const PAGINATION_PAGE_NUM = Math.ceil(TOTAL_PRODUCTS_COUNT / PAGINATION_PAGE_SIZE);
-    // const cropProducts = filteredProducts.slice(0, PAGINATION_PAGE_NUM * PAGINATION_PAGE_SIZE);    
+    const TOTAL_PRODUCTS_COUNT = filteredProducts.length;    
     const cropProducts = filteredProducts.slice(0, paginationCurrentPageNum * PAGINATION_PAGE_SIZE);    
-    const PRODUCTS_DISPLAYED = cropProducts.length;
-    
-    // console.log('products on page', PRODUCTS_DISPLAYED, 'page num', PAGINATION_PAGE_NUM, 'products on page', PAGINATION_PAGE_SIZE);
+    const PRODUCTS_DISPLAYED = cropProducts.length;        
     
     const handlePaginateNextPage = () => {
         setPaginationCurrentPageNum(paginationCurrentPageNum + 1);
@@ -104,4 +99,4 @@ const Products = ({supplierId}) => {
     );
 }
  
-export default Products;
+export default ProductsList;

@@ -15,17 +15,15 @@ export const SuppliersCatalogueModelProvider = ({children}) => {
     useEffect(() => {
         let isUnmounted = false;
 
-        const _m = new SuppliersCatalogueModel();
+        const modelNewState = new SuppliersCatalogueModel();
 
-        _m.init()
+        modelNewState.init()
             .then((res) => {
                 if (isUnmounted) {
                     return;
                 }
-                setModel(_m);
-                // console.log('result are', res);
-                setIsLoading(false);
-                console.log('Model loaded!');
+                setModel(modelNewState);                
+                setIsLoading(false);                
             })
             .catch(err => {
                 if (isUnmounted) {
