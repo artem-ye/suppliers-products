@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import Spoiler from './common/spoiler/spoiler';
 
-const ProductsTags = ({tagsArray, onChange}) => {
-    // const containerRef = useRef(null);
-    // const isContainerOverflowed = useOverflowDetection(containerRef);
-    // console.log('Is over', isContainerOverflowed);
-
-
+const ProductsTags = ({tagsArray, onChange}) => {    
     const [data, setData] = useState(tagsArray.map((el, index) => 
         ({label: el, id: el+'_'+index+1, checked: true, index})
     ));
