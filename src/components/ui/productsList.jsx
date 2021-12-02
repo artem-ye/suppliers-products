@@ -51,11 +51,9 @@ const ProductsList = ({supplierId}) => {
         }        
 
         return products;
-    };
+    };    
     
-    
-    const filteredProducts = filterProducts(data.products);
-    
+    const filteredProducts = filterProducts(data.products);    
     const TOTAL_PRODUCTS_COUNT = filteredProducts.length;    
     const cropProducts = filteredProducts.slice(0, paginationCurrentPageNum * PAGINATION_PAGE_SIZE);    
     const PRODUCTS_DISPLAYED = cropProducts.length;        
@@ -68,12 +66,47 @@ const ProductsList = ({supplierId}) => {
         setFilterOptions(prev => ({...prev, [filterType]: data}));        
     };
 
+    const controlsTextStyle = 'text-primary';
+
     return (        
         PRODUCTS_DISPLAYED > 0 &&
         <>
-            <div className="container m-2 d-flex flex-wrap">
-                <ProductsTags tagsArray={data.productsTags} onChange={(data) => handleFilterChange('tags', data)}/>
+            <div className="btn-group m-2">
+                <button 
+                    className={"btn "+controlsTextStyle+" btn-sm dropdown-toggle"}
+                    type="button" 
+                    data-bs-toggle="collapse" 
+                    data-bs-target="#collapseTags" 
+                    aria-expanded="false" 
+                    aria-controls="collapseTags"
+                >
+                    Фильтр
+                </button>
+
+                <div className="dropdown ms-1">
+                    <button 
+                        className={"btn "+controlsTextStyle+" btn-sm dropdown-toggle"} 
+                        type="button" 
+                        id="dropdownMenuButton1" 
+                        data-bs-toggle="dropdown" 
+                        aria-expanded="false"
+                    >
+                        Сортировка
+                    </button>
+                    <ul className="dropdown-menu " aria-labelledby="dropdownMenuButton1">
+                        <li><a className={"dropdown-item  "} href="#">Артикул</a></li>
+                        <li><a className="dropdown-item" href="#">Наименование</a></li>
+                        <li><a className="dropdown-item" href="#">Дата создания</a></li>
+                    </ul>
+                </div>
             </div>
+
+            <div className="collapse" id="collapseTags">               
+                 <div className="container m-2 d-flex flex-wrap">
+                    <ProductsTags tagsArray={data.productsTags} onChange={(data) => handleFilterChange('tags', data)}/> 
+                </div>
+            </div>           
+
             <div className="row row-cols-4 m-2">
                 {                    
                     cropProducts.map((product, key) => (

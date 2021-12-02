@@ -1,33 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
-
-const containerStyles = {
-    maxHeight: '90px', 
-    overflowY: 'hidden'   
-};
-
-const useOverflowDetection = (ref) => {
-    const [isOverflow, setIsOverflow] = useState(false);
-
-    useEffect(() => {
-        if (ref) {
-            console.log('Counting....');
-            const el = ref.current;
-            const refIsOverflown = (el.scrollHeight > el.clientHeight || el.scrollWidth > el.clientWidth);
-            
-            if (refIsOverflown !== isOverflow) {
-                setIsOverflow(refIsOverflown);
-            }           
-        }
-    });
-
-    return isOverflow;
-};
+import React, { useEffect, useState } from 'react';
+import Spoiler from './common/spoiler/spoiler';
 
 const ProductsTags = ({tagsArray, onChange}) => {
-    const containerRef = useRef(null);
-
-    const isContainerOverflowed = useOverflowDetection(containerRef);
-    console.log('Is over', isContainerOverflowed);
+    // const containerRef = useRef(null);
+    // const isContainerOverflowed = useOverflowDetection(containerRef);
+    // console.log('Is over', isContainerOverflowed);
 
 
     const [data, setData] = useState(tagsArray.map((el, index) => 
@@ -67,34 +44,30 @@ const ProductsTags = ({tagsArray, onChange}) => {
     const isMoreThenOneTagProvided = data.length > 1;
     
     return (
-        <>
-            <div style={containerStyles} ref={containerRef}>
-                {
-                    isMoreThenOneTagProvided &&
-                    <div key={data.length+1} className="form-check form-check-inline ps-0" style={{fontSize: '0.8em'}}>
-                        <span className="badge bg-danger" role="button" onClick={handleResetSelection}>Clear</span>
-                    </div>
-                }
-                {
-                    data.map((el) => (
-                        <div key={el.id} className="form-check form-check-inline" style={{fontSize: '0.8em'}}>
-                            <input 
-                                className="form-check-input" type="checkbox" 
-                                id={el.id} checked={el.checked} onChange={() => handleChangeSelection(el)}
-                                disabled={!isMoreThenOneTagProvided}
-                            />                    
-                            <label className="form-check-label" htmlFor={el.id}>{el.label}</label>
-                        </div>
-                    ))
-                }                         
-            </div>
-            {isContainerOverflowed && 
-                <span className="badge bg-primary m-auto fw-light" role="button" onClick={handleResetSelection}>
-                    <i className="bi bi-chevron-double-down"/>&nbsp;
-                    <span className="m-2">Показать весь список</span>
-                </span>
+
+        
+        // <Spoiler maxHeight="90px">
+        <div>
+            {
+                isMoreThenOneTagProvided &&
+                <div key={data.length+1} className="form-check form-check-inline ps-0" style={{fontSize: '0.8em'}}>
+                    <span className="badge bg-danger" role="button" onClick={handleResetSelection}>Clear</span>
+                </div>
             }
-        </>
+            {
+                data.map((el) => (
+                    <div key={el.id} className="form-check form-check-inline" style={{fontSize: '0.8em'}}>
+                        <input 
+                            className="form-check-input" type="checkbox" 
+                            id={el.id} checked={el.checked} onChange={() => handleChangeSelection(el)}
+                            disabled={!isMoreThenOneTagProvided}
+                        />                    
+                        <label className="form-check-label" htmlFor={el.id}>{el.label}</label>
+                    </div>
+                ))
+            }                         
+        </div>           
+        // </Spoiler>
     ); 
 }
  

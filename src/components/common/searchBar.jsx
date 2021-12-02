@@ -83,7 +83,14 @@ const SearchBar = ({options, defaultOption, onChange}) => {
                     onChange={handlerSearchInputChange}
                     onClick={handleInputClick}                               
                     value={inputValue}
-                />                
+                />
+
+                {/* <button className="btn badge bg-body text-dark">
+                    <i className="bi bi-chevron-double-down"></i>
+                </button> */}
+                {/* <button className="btn btn-light">
+                    <i className="bi bi-chevron-double-down"></i>
+                </button>                 */}
             </div>  
 
             {dropdownItems.length > 0 &&
