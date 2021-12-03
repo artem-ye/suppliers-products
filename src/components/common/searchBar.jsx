@@ -16,7 +16,10 @@ const DropDownItem = ({handleDropDownListItemSelect, listItem, isActive=false}) 
     );
 }
 
-const SearchBar = ({options, defaultOption, onChange}) => {   
+const SearchBar = ({options, defaultOption, onChange}) => {
+    // const [inputValuePrevState, setInputValuePrevState] = useState(defaultOption?.label || '');
+    // const [currentOption, setCurrentOption] = useState(defaultOption?.label || '');
+
     const [inputValue, setInputValue] = useState(defaultOption?.label || '');
     const [dropdownItems, setDropdownItems] = useState(options || []);    
     const [showDropDown, setShowDropDown] = useState(false);
@@ -29,7 +32,19 @@ const SearchBar = ({options, defaultOption, onChange}) => {
     const applyFilter = (filteredOptions) => {
         setDropdownItems(filteredOptions);                
         setShowDropDown(filteredOptions.length > 0);
-    }   
+    }
+    
+    const cancel = () => {
+        if (!showDropDown) {
+            return;
+        }
+
+        setTimeout(function(){ 
+            if (showDropDown) {    
+                setShowDropDown(false);
+            }
+        }, 200);
+    }
     
     //  Select / submit event handlers    
     const handlerSubmit = (event) => {           
@@ -69,20 +84,18 @@ const SearchBar = ({options, defaultOption, onChange}) => {
         applyFilter(filteredOptions);        
     }
     
-    const handleBlur = (e) => {
-        if (!showDropDown) {
-            return;
-        }
+    const handleBlur = () => {
+        cancel();
+    }
 
-        setTimeout(function(){ 
-            if (showDropDown) {    
-                setShowDropDown(false);
-            }
-        }, 200);
+    const handleKeyPress = (event) => {
+        if (event.keyCode) {
+            cancel();
+        }
     }
 
     return ( 
-        <form className="bg-light w-100 search-nav" onSubmit={handlerSubmit} onBlur={handleBlur}>
+        <form className="bg-light w-100 search-nav" onSubmit={handlerSubmit} onBlur={handleBlur} onKeyUp={handleKeyPress}>
             
             <div className="w-100 d-flex">                              
                 <input 
