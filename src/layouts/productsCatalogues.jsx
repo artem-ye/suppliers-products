@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-import SearchBar from '../components/searchBar.jsx';
-import Products from '../components/products';
-import SuppliersCatalogueModel from '../model/model';
+import ProductsList from '../components/ui/productsList';
 import { useHistory, useParams } from 'react-router';
+import { SuppliersCatalogueModelProvider } from '../model/useSuppliersCatalogueModel.js';
+import SupplierSelectField from '../components/ui/supplierSelectField.jsx';
 
 
 // const SearchBarDropDownItemContent = ({allSuppliersItem}) => (
@@ -14,29 +14,7 @@ import { useHistory, useParams } from 'react-router';
 
 const ProductsCatalogue = () => {
     const [supplierId, setSupplierId] = useState(useParams().supplierId);
-    const history = useHistory();
-    
-    const [model, setModel] = useState(new SuppliersCatalogueModel());
-    const [error, setError] = useState(null);
-    const [isLoaded, setIsLoaded] = useState(false);          
-    const [allSuppliers, setAllSuppliers] = useState([]);
-    
-
-    useEffect(() => {        
-        model.init()
-            .then(() => {
-                setIsLoaded(false);                
-                setModel(model);                                                
-                const suppliers = model.suppliers.map(sup => {                    
-                    return {label: sup.supplier, value: sup.id};
-                });
-                setAllSuppliers(suppliers);
-                setIsLoaded(true);
-            }).catch(err => {
-                setIsLoaded(true);
-                setError(err);
-            });
-    }, []);    
+    const history = useHistory();        
   
   
     const handleSupplierChange = (supplier) => {
@@ -46,31 +24,19 @@ const ProductsCatalogue = () => {
         history.push('/'+supplier.value);        
         setSupplierId(supplier.value);
     }
-    
-    if (error) {
-        return <div>Ошибка: {error.message}</div>;
-    } else if (!isLoaded) {
-        return (
-            <div className="spinner-border" role="status">
-                <span className="visually-hidden">Загрузка...</span>
-            </div>
-        );
-    } else {                
-
-        return (
-            <>
-                <SearchBar 
-                    onChange={handleSupplierChange}
-                    options={allSuppliers}
-                    defaultOption={allSuppliers.find(el => el.value === supplierId)}
-                />               
-                <Products                    
-                    supplierId={supplierId}                    
-                    model={model}
-                />                   
-            </>
-        );
-    }  
+          
+    return (
+        <SuppliersCatalogueModelProvider>             
+            <SupplierSelectField
+                onChange={handleSupplierChange}
+                supplierId={supplierId}
+            />
+            <ProductsList                    
+                supplierId={supplierId}                    
+            />                   
+        </SuppliersCatalogueModelProvider>
+    );
+   
 }
  
 export default ProductsCatalogue;

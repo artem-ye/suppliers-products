@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import Spinner from './spinner';
+import Spinner from './common/spinner';
 
 const ProductImage = ({src}) => {    
     const ERR_SRC = '/404.jpeg';
@@ -25,11 +25,10 @@ const ProductImage = ({src}) => {
         img.addEventListener('error', handlerOnErr)
         img.src = src;
 
-        return () => {           
-            // img.src ='';
+        return () => {
             img.removeEventListener('load', handlerOnLoad);
             img.removeEventListener('error', handlerOnErr)
-        };           
+        };
     }, [src]);               
 
     return (              

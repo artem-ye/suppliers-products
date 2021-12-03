@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 const DropDownItem = ({handleDropDownListItemSelect, listItem, isActive=false}) => {      
     
@@ -20,19 +20,19 @@ const DropDownItem = ({handleDropDownListItemSelect, listItem, isActive=false}) 
 const SearchBar = ({options, defaultOption, onChange}) => {            
     const [inputValue, setInputValue] = useState(defaultOption?.label || '');
     const [dropdownItems, setDropdownItems] = useState(options || []);    
-    const [showDropDown, setShowDropDown] = useState(false);    
+    const [showDropDown, setShowDropDown] = useState(false);
     
-    // -----------------------------------------------------
+    useEffect(() => {
+        setInputValue(defaultOption?.label || '');
+    }, [defaultOption]);    
+    
     // Helper functions    
-
     const applyFilter = (filteredOptions) => {
         setDropdownItems(filteredOptions);                
         setShowDropDown(filteredOptions.length > 0);
     }   
-
-    // -----------------------------------------------------
+    
     //  Select / submit event handlers    
-
     const handlerSubmit = (event) => {           
         event.preventDefault();                      
         setShowDropDown(false);                              
@@ -49,10 +49,8 @@ const SearchBar = ({options, defaultOption, onChange}) => {
         setDropdownItems(dropdownItem);        
         onChange(dropdownItem);         
     }        
-    
-    // -----------------------------------------------------
-    // List filtering event handlers    
-
+        
+    // List filtering event handlers        
     const handleInputClick = () => {
         if (!inputValue.trim())  {                                  
             applyFilter( showDropDown ? [] : options);
@@ -85,7 +83,14 @@ const SearchBar = ({options, defaultOption, onChange}) => {
                     onChange={handlerSearchInputChange}
                     onClick={handleInputClick}                               
                     value={inputValue}
-                />                
+                />
+
+                {/* <button className="btn badge bg-body text-dark">
+                    <i className="bi bi-chevron-double-down"></i>
+                </button> */}
+                {/* <button className="btn btn-light">
+                    <i className="bi bi-chevron-double-down"></i>
+                </button>                 */}
             </div>  
 
             {dropdownItems.length > 0 &&

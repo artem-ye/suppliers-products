@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import ProductCard from './productCard';
-import ProductsTags from './productsTags';
+import { useSuppliersCatalogueModel } from '../../model/useSuppliersCatalogueModel';
+import ProductCard from '../productCard';
+import ProductsTags from '../productsTags';
 
 const PAGINATION_PAGE_SIZE = 20 * 6;
 const DATA_INITIAL_STATE = {
@@ -9,7 +10,9 @@ const DATA_INITIAL_STATE = {
 };
 const FILTER_INITIAL_STATE = {};
 
-const Products = ({supplierId, model}) => {    
+const ProductsList = ({supplierId}) => {    
+    const {model} = useSuppliersCatalogueModel();
+
     const [paginationCurrentPageNum, setPaginationCurrentPageNum] = useState(1);
     const [filterOptions, setFilterOptions] = useState(FILTER_INITIAL_STATE);    
     const [data, setData] = useState(DATA_INITIAL_STATE);
@@ -30,9 +33,10 @@ const Products = ({supplierId, model}) => {
         setData(dataNewState);
     }, [supplierId, model]);    
     
+
     if (data.products.length === 0) {        
         return null;
-    };    
+    };   
 
     const filterProducts = (products) => {  
         if (!Array.isArray(products)) {
@@ -47,18 +51,12 @@ const Products = ({supplierId, model}) => {
         }        
 
         return products;
-    };
+    };    
     
-    
-    const filteredProducts = filterProducts(data.products);
-    
-    const TOTAL_PRODUCTS_COUNT = filteredProducts.length;
-    // const PAGINATION_PAGE_NUM = Math.ceil(TOTAL_PRODUCTS_COUNT / PAGINATION_PAGE_SIZE);
-    // const cropProducts = filteredProducts.slice(0, PAGINATION_PAGE_NUM * PAGINATION_PAGE_SIZE);    
+    const filteredProducts = filterProducts(data.products);    
+    const TOTAL_PRODUCTS_COUNT = filteredProducts.length;    
     const cropProducts = filteredProducts.slice(0, paginationCurrentPageNum * PAGINATION_PAGE_SIZE);    
-    const PRODUCTS_DISPLAYED = cropProducts.length;
-    
-    // console.log('products on page', PRODUCTS_DISPLAYED, 'page num', PAGINATION_PAGE_NUM, 'products on page', PAGINATION_PAGE_SIZE);
+    const PRODUCTS_DISPLAYED = cropProducts.length;        
     
     const handlePaginateNextPage = () => {
         setPaginationCurrentPageNum(paginationCurrentPageNum + 1);
@@ -68,12 +66,47 @@ const Products = ({supplierId, model}) => {
         setFilterOptions(prev => ({...prev, [filterType]: data}));        
     };
 
+    const controlsTextStyle = 'text-primary';
+
     return (        
         PRODUCTS_DISPLAYED > 0 &&
         <>
-            <div className="container m-2 d-flex flex-wrap">
-                <ProductsTags tagsArray={data.productsTags} onChange={(data) => handleFilterChange('tags', data)}/>
+            <div className="btn-group m-2">
+                <button 
+                    className={"btn "+controlsTextStyle+" btn-sm dropdown-toggle"}
+                    type="button" 
+                    data-bs-toggle="collapse" 
+                    data-bs-target="#collapseTags" 
+                    aria-expanded="false" 
+                    aria-controls="collapseTags"
+                >
+                    Фильтр
+                </button>
+
+                <div className="dropdown ms-1">
+                    <button 
+                        className={"btn "+controlsTextStyle+" btn-sm dropdown-toggle"} 
+                        type="button" 
+                        id="dropdownMenuButton1" 
+                        data-bs-toggle="dropdown" 
+                        aria-expanded="false"
+                    >
+                        Сортировка
+                    </button>
+                    <ul className="dropdown-menu " aria-labelledby="dropdownMenuButton1">
+                        <li><a className={"dropdown-item  "} href="#">Артикул</a></li>
+                        <li><a className="dropdown-item" href="#">Наименование</a></li>
+                        <li><a className="dropdown-item" href="#">Дата создания</a></li>
+                    </ul>
+                </div>
             </div>
+
+            <div className="collapse" id="collapseTags">               
+                 <div className="container m-2 d-flex flex-wrap">
+                    <ProductsTags tagsArray={data.productsTags} onChange={(data) => handleFilterChange('tags', data)}/> 
+                </div>
+            </div>           
+
             <div className="row row-cols-4 m-2">
                 {                    
                     cropProducts.map((product, key) => (
@@ -99,4 +132,4 @@ const Products = ({supplierId, model}) => {
     );
 }
  
-export default Products;
+export default ProductsList;
