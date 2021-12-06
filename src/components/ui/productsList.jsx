@@ -94,9 +94,9 @@ const ProductsList = ({supplierId}) => {
                         Сортировка
                     </button>
                     <ul className="dropdown-menu " aria-labelledby="dropdownMenuButton1">
-                        <li><a className={"dropdown-item  "} href="#">Артикул</a></li>
-                        <li><a className="dropdown-item" href="#">Наименование</a></li>
-                        <li><a className="dropdown-item" href="#">Дата создания</a></li>
+                        <li><button className={"dropdown-item  "}>Артикул</button></li>
+                        <li><button className="dropdown-item">Наименование</button></li>
+                        <li><button className="dropdown-item">Дата создания</button></li>
                     </ul>
                 </div>
             </div>

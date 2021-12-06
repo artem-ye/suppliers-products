@@ -1,12 +1,11 @@
 import React, {useEffect, useState} from 'react';
 
-const DropDownItem = ({handleDropDownListItemSelect, listItem, isActive=false}) => {      
-    
+const DropDownItem = ({handleDropDownListItemSelect, listItem, isActive=false}) => {
     return (
         <button            
             className={'list-group-item list-group-item-action cursor-default' + (isActive ? ' active-light' : '')}                                
             onClick={
-                () => {                                         
+                (e) => {
                     handleDropDownListItemSelect({value: listItem.value, label: listItem.label});
                 }
             }
@@ -17,7 +16,10 @@ const DropDownItem = ({handleDropDownListItemSelect, listItem, isActive=false}) 
     );
 }
 
-const SearchBar = ({options, defaultOption, onChange}) => {            
+const SearchBar = ({options, defaultOption, onChange}) => {
+    // const [inputValuePrevState, setInputValuePrevState] = useState(defaultOption?.label || '');
+    // const [currentOption, setCurrentOption] = useState(defaultOption?.label || '');
+
     const [inputValue, setInputValue] = useState(defaultOption?.label || '');
     const [dropdownItems, setDropdownItems] = useState(options || []);    
     const [showDropDown, setShowDropDown] = useState(false);
@@ -30,7 +32,19 @@ const SearchBar = ({options, defaultOption, onChange}) => {
     const applyFilter = (filteredOptions) => {
         setDropdownItems(filteredOptions);                
         setShowDropDown(filteredOptions.length > 0);
-    }   
+    }
+    
+    const cancel = () => {
+        if (!showDropDown) {
+            return;
+        }
+
+        setTimeout(function(){ 
+            if (showDropDown) {    
+                setShowDropDown(false);
+            }
+        }, 200);
+    }
     
     //  Select / submit event handlers    
     const handlerSubmit = (event) => {           
@@ -44,7 +58,7 @@ const SearchBar = ({options, defaultOption, onChange}) => {
         }                       
     }
 
-    const handleDropDownListItemSelect = (dropdownItem) => {                          
+    const handleDropDownListItemSelect = (dropdownItem) => {                     
         setInputValue(dropdownItem.label);
         setDropdownItems(dropdownItem);        
         onChange(dropdownItem);         
@@ -57,7 +71,6 @@ const SearchBar = ({options, defaultOption, onChange}) => {
         } else {
             setShowDropDown(prev => !prev);
         }
-        
     }
 
     const handlerSearchInputChange = (event) => {               
@@ -69,10 +82,20 @@ const SearchBar = ({options, defaultOption, onChange}) => {
             : options.filter(({label}) => label.toLowerCase().includes(value));
 
         applyFilter(filteredOptions);        
-    }  
+    }
+    
+    const handleBlur = () => {
+        cancel();
+    }
+
+    const handleKeyPress = (event) => {
+        if (event.keyCode) {
+            cancel();
+        }
+    }
 
     return ( 
-        <form className="bg-light w-100 search-nav" onSubmit={handlerSubmit}>
+        <form className="bg-light w-100 search-nav" onSubmit={handlerSubmit} onBlur={handleBlur} onKeyUp={handleKeyPress}>
             
             <div className="w-100 d-flex">                              
                 <input 
@@ -88,9 +111,9 @@ const SearchBar = ({options, defaultOption, onChange}) => {
                 {/* <button className="btn badge bg-body text-dark">
                     <i className="bi bi-chevron-double-down"></i>
                 </button> */}
-                {/* <button className="btn btn-light">
-                    <i className="bi bi-chevron-double-down"></i>
-                </button>                 */}
+                {/* <div>
+                <i className="bi bi-chevron-double-down"/>
+                </div> */}
             </div>  
 
             {dropdownItems.length > 0 &&
