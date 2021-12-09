@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { useSuppliersCatalogueModel } from '../../../model/useSuppliersCatalogueModel';
 import ProductListCard from './productListCard';
 import ProductsTags from '../../productsTags';
+import SortDropdown from './productsListSortDropdown';
 
 const PAGINATION_PAGE_SIZE = 3 * 6;
 const DATA_INITIAL_STATE = {
@@ -69,12 +70,22 @@ const ProductsList = ({supplierId}) => {
         setFilterOptions(prev => ({...prev, [filterType]: data}));        
     };
 
-    const controlsTextStyle = 'text-primary';
+    // const controlsTextStyle = 'text-primary';
+
+    const sortOptions = [
+        {title: 'Артикул', value: 'sku'},
+        {title: 'Наименование', value: 'title'},
+        {title: 'Дата создания', value: 'default'}
+    ];
 
     return (        
         PRODUCTS_DISPLAYED > 0 &&
         <>
-            <div className="btn-group m-2">
+            <SortDropdown 
+                options={sortOptions}
+                defaultOption={sortOptions[2]}
+            />
+            {/* <div className="btn-group m-2">
                 <button 
                     className={"btn "+controlsTextStyle+" btn-sm dropdown-toggle"}
                     type="button" 
@@ -102,7 +113,7 @@ const ProductsList = ({supplierId}) => {
                         <li><button className="dropdown-item">Дата создания</button></li>
                     </ul>
                 </div>
-            </div>
+            </div> */}
 
             <div className="collapse" id="collapseTags">               
                  <div className="container m-2 d-flex flex-wrap">
