@@ -1,5 +1,5 @@
 import React from 'react';
-import ProductImage from './productImage';
+import ProductImage from '../../productImage';
 
 const ProductListCard = ({product, productImageURL}) => {    
     return (            

@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import { useSuppliersCatalogueModel } from '../../model/useSuppliersCatalogueModel';
-import ProductListCard from '../productListCard';
-import ProductsTags from '../productsTags';
+import { useSuppliersCatalogueModel } from '../../../model/useSuppliersCatalogueModel';
+import ProductListCard from './productListCard';
+import ProductsTags from '../../productsTags';
 
 const PAGINATION_PAGE_SIZE = 20 * 6;
 const DATA_INITIAL_STATE = {
