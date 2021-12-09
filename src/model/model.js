@@ -72,7 +72,11 @@ class SuppliersCatalogueModel {
             return {...acc, [el.title]: el.title };
         }, {});
 
-        return Object.keys(list).sort();
+       
+
+        const sortFn = (a, b) => a.trimStart().substring(0, 1) > b.trimStart().substring(0, 1) ? 1 : -1;
+
+        return Object.keys(list).sort(sortFn);
     }
 
     getProductPreviewImageURL(product) {
