@@ -88,8 +88,9 @@ const SearchBar = ({options, defaultOption, onChange}) => {
         cancel();
     }
 
-    const handleKeyPress = (event) => {
-        if (event.keyCode) {
+    const handleKeyPress = (event) => {        
+        if (event.keyCode === 27) {
+            // ESC pressed
             cancel();
         }
     }
