@@ -4,7 +4,7 @@ import ProductListCard from './productListCard';
 import ProductsTags from '../../productsTags';
 import SortDropdown from './productsListSortDropdown';
 
-const PAGINATION_PAGE_SIZE = 3 * 6;
+const PAGINATION_PAGE_SIZE = 5 * 6;
 const DATA_INITIAL_STATE = {
     products: [],
     productsTags: []
