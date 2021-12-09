@@ -4,7 +4,19 @@ import { useState } from 'react';
 const CONTROLS_TEST_STYLE = 'text-primary';
 
 const SortDropdown = ({options, defaultOption, onChange}) => {
-    const [activeOption, setActiveOption] = useState(defaultOption || options[0]);    
+    const [activeOption, setActiveOption] = useState(defaultOption || options[0]);
+
+    const handleSelect = (evt) => {
+        const selectedVal = evt.target?.value || null;
+
+        if (!selectedVal) {
+            return;
+        }
+
+        const selectedOption = options.find(opt => opt.value === selectedVal);
+        setActiveOption(selectedOption);
+        onChange(selectedOption);
+    }
 
     return (
         <div className="btn-group m-2">
@@ -29,11 +41,16 @@ const SortDropdown = ({options, defaultOption, onChange}) => {
                     >
                         Сортировка
                     </button>
-                    <ul className="dropdown-menu " aria-labelledby="dropdownMenuButton1">
+                    <ul className="dropdown-menu " aria-labelledby="dropdownMenuButton1" onClick={handleSelect}>
                         {
                             options.map(opt => (
                                 <li key={opt.value}>
-                                    <button className={"dropdown-item" + (opt.value === activeOption.value ? ' active' : '')}>{opt.title}</button>
+                                    <button 
+                                        className={"dropdown-item" + (opt.value === activeOption.value ? ' active' : '')}
+                                        value={opt.value}
+                                    >
+                                        {opt.title}
+                                    </button>
                                 </li>        
                             ))
                         }                        

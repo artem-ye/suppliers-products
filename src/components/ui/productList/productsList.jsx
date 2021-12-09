@@ -84,6 +84,7 @@ const ProductsList = ({supplierId}) => {
             <SortDropdown 
                 options={sortOptions}
                 defaultOption={sortOptions[2]}
+                onChange={(val) => console.log('New sort order is', val)}
             />
             {/* <div className="btn-group m-2">
                 <button 
@@ -127,7 +128,7 @@ const ProductsList = ({supplierId}) => {
                         <ProductListCard 
                             key={key}
                             product={product} 
-                            productImageURL={model.getProductPreviewImageURL(product)}
+                            productImageURL={model.getProductPreviewImageURL(product)}                            
                         />
                     ))
                 }
