@@ -50,7 +50,7 @@ const ProductsList = ({supplierId}) => {
             return res;
         }        
 
-        return products;
+        return products.sort((a, b) => a.title > b.title ? 1 : -1);
     };    
     
     const filteredProducts = filterProducts(data.products);    
