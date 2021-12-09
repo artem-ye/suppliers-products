@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { useSuppliersCatalogueModel } from '../../model/useSuppliersCatalogueModel';
-import ProductCard from '../productCard';
+import ProductListCard from '../productListCard';
 import ProductsTags from '../productsTags';
 
 const PAGINATION_PAGE_SIZE = 20 * 6;
@@ -110,7 +110,7 @@ const ProductsList = ({supplierId}) => {
             <div className="row row-cols-4 m-2">
                 {                    
                     cropProducts.map((product, key) => (
-                        <ProductCard 
+                        <ProductListCard 
                             key={key}
                             product={product} 
                             productImageURL={model.getProductPreviewImageURL(product)}
