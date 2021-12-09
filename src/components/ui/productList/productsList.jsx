@@ -3,7 +3,7 @@ import { useSuppliersCatalogueModel } from '../../../model/useSuppliersCatalogue
 import ProductListCard from './productListCard';
 import ProductsTags from '../../productsTags';
 
-const PAGINATION_PAGE_SIZE = 20 * 6;
+const PAGINATION_PAGE_SIZE = 3 * 6;
 const DATA_INITIAL_STATE = {
     products: [],
     productsTags: []
@@ -62,7 +62,10 @@ const ProductsList = ({supplierId}) => {
         setPaginationCurrentPageNum(paginationCurrentPageNum + 1);
     };
 
-    const handleFilterChange = (filterType, data) => {        
+    const handleFilterChange = (filterType, data) => {
+        if (paginationCurrentPageNum !== 1) {
+            setPaginationCurrentPageNum(1);
+        }
         setFilterOptions(prev => ({...prev, [filterType]: data}));        
     };
 
