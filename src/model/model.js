@@ -58,11 +58,11 @@ class SuppliersCatalogueModel {
     }
 
     getSupplierProducts(supplier) {              
-        if (!supplier) return undefined;
+        if (!supplier) return undefined;        
        
         const products = this.suppliersProducts[supplier.id];
         return products.map(product => {
-            const title = product.title.slice(product.title.indexOf('/')+1);
+            const title = product.title.slice(product.title.indexOf('/')+1).trim();
             return {...product, title};
         });
     }
@@ -70,9 +70,11 @@ class SuppliersCatalogueModel {
     getProductsTags(products) {
         const list = products.reduce((acc, el) => {
             return {...acc, [el.title]: el.title };
-        }, {});
+        }, {});       
+        
+        const sortFn = (a, b) => a.trim() > b.trim() ? 1 : -1;
 
-        return Object.keys(list).sort();
+        return Object.keys(list).sort(sortFn);
     }
 
     getProductPreviewImageURL(product) {

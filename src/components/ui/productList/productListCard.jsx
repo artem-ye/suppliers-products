@@ -1,7 +1,7 @@
 import React from 'react';
-import ProductImage from './productImage';
+import ProductImage from '../../productImage';
 
-const ProductCard = ({product, productImageURL}) => {    
+const ProductListCard = ({product, productImageURL}) => {    
     return (            
         <div className="card m-1 card-width">
             <div className="h-100 m-1">
@@ -15,4 +15,4 @@ const ProductCard = ({product, productImageURL}) => {
     );    
 }
  
-export default ProductCard;
+export default ProductListCard;
