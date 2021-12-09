@@ -11,11 +11,23 @@ const DATA_INITIAL_STATE = {
 };
 const FILTER_INITIAL_STATE = {};
 
+const SORT_ORDERS = {
+    SKU: {
+        title: 'Артикул',
+        key: 'sku'
+    }, 
+    TITLE: {
+        title: 'Наименование',
+        key: 'title'
+    }    
+};
+
 const ProductsList = ({supplierId}) => {    
     const {model} = useSuppliersCatalogueModel();
 
     const [paginationCurrentPageNum, setPaginationCurrentPageNum] = useState(1);
-    const [filterOptions, setFilterOptions] = useState(FILTER_INITIAL_STATE);    
+    const [filterOptions, setFilterOptions] = useState(FILTER_INITIAL_STATE);
+    const [sortOrder, setSortOrder] = useState(SORT_ORDERS.TITLE);
     const [data, setData] = useState(DATA_INITIAL_STATE);
     
     useEffect(() => {
@@ -51,10 +63,21 @@ const ProductsList = ({supplierId}) => {
             return res;
         }        
 
-        return products.sort((a, b) => a.title > b.title ? 1 : -1);
-    };    
+        return products;        
+    };
+
+    const sortProducts = (products) => {        
+        switch (sortOrder?.key) {
+            case SORT_ORDERS.TITLE.key:
+                return products.sort((a, b) => a.title > b.title ? 1 : -1);
+            case SORT_ORDERS.SKU.key:
+                return products.sort((a, b) => Number(a.sku) > Number(b.sku) ? 1 : -1);                        
+            default:
+                return products;
+        }                
+    }
     
-    const filteredProducts = filterProducts(data.products);    
+    const filteredProducts = sortProducts( filterProducts(data.products) );    
     const TOTAL_PRODUCTS_COUNT = filteredProducts.length;    
     const cropProducts = filteredProducts.slice(0, paginationCurrentPageNum * PAGINATION_PAGE_SIZE);    
     const PRODUCTS_DISPLAYED = cropProducts.length;        
@@ -68,54 +91,25 @@ const ProductsList = ({supplierId}) => {
             setPaginationCurrentPageNum(1);
         }
         setFilterOptions(prev => ({...prev, [filterType]: data}));        
-    };
+    };    
 
-    // const controlsTextStyle = 'text-primary';
+    const sortOptions = Object.values(SORT_ORDERS).map(entry => 
+        ({title: entry.title, value: entry.key })
+    );
 
-    const sortOptions = [
-        {title: 'Артикул', value: 'sku'},
-        {title: 'Наименование', value: 'title'},
-        {title: 'Дата создания', value: 'default'}
-    ];
+    const handleSortOrderChange = (sortOption) => {
+        const sortOrderVal = Object.values(SORT_ORDERS).find(entry => entry.key === sortOption.value);
+        setSortOrder(sortOrderVal);
+    }
 
     return (        
         PRODUCTS_DISPLAYED > 0 &&
         <>
             <SortDropdown 
                 options={sortOptions}
-                defaultOption={sortOptions[2]}
-                onChange={(val) => console.log('New sort order is', val)}
+                defaultOption={sortOptions[1]}
+                onChange={handleSortOrderChange}
             />
-            {/* <div className="btn-group m-2">
-                <button 
-                    className={"btn "+controlsTextStyle+" btn-sm dropdown-toggle"}
-                    type="button" 
-                    data-bs-toggle="collapse" 
-                    data-bs-target="#collapseTags" 
-                    aria-expanded="false" 
-                    aria-controls="collapseTags"
-                >
-                    Фильтр
-                </button>
-
-                <div className="dropdown ms-1">
-                    <button 
-                        className={"btn "+controlsTextStyle+" btn-sm dropdown-toggle"} 
-                        type="button" 
-                        id="dropdownMenuButton1" 
-                        data-bs-toggle="dropdown" 
-                        aria-expanded="false"
-                    >
-                        Сортировка
-                    </button>
-                    <ul className="dropdown-menu " aria-labelledby="dropdownMenuButton1">
-                        <li><button className={"dropdown-item  "}>Артикул</button></li>
-                        <li><button className="dropdown-item">Наименование</button></li>
-                        <li><button className="dropdown-item">Дата создания</button></li>
-                    </ul>
-                </div>
-            </div> */}
-
             <div className="collapse" id="collapseTags">               
                  <div className="container m-2 d-flex flex-wrap">
                     <ProductsTags tagsArray={data.productsTags} onChange={(data) => handleFilterChange('tags', data)}/> 
