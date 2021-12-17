@@ -54,8 +54,8 @@ const DefaultFallBack = () => (
 ImageLoader.propTypes = {
     src: PropTypes.string.isRequired,
     src404: PropTypes.string,
-    alt: PropTypes.string,
-    spinner: PropTypes.oneOf([PropTypes.node, null]),
+    alt: PropTypes.string,    
+    spinner: PropTypes.node,
     fallBack: PropTypes.oneOf([PropTypes.node, null])
 };
 
