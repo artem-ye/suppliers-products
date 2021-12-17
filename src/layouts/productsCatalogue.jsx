@@ -6,9 +6,12 @@ import { SuppliersCatalogueModelProvider } from '../model/useSuppliersCatalogueM
 import SupplierSelectField from '../components/ui/supplierSelectField.jsx';
 import useConfig from '../hooks/useConfig';
 import ProductCard from '../components/ui/productCard';
+// import { useEffect } from 'react';
 
 const ProductsCatalogue = () => {
-    const [supplierId, setSupplierId] = useState(useParams().supplierId);    
+    const ParamsSuppId = useParams().supplierId;
+
+    const [supplierId, setSupplierId] = useState( ParamsSuppId );    
     const productSku = useParams().productSku;        
 
     const history = useHistory();        
@@ -24,24 +27,30 @@ const ProductsCatalogue = () => {
 
     const handleProductsListCardClick = (product) => {                
         history.push(history.location.pathname+'/'+product.sku);
-    }
+    }     
+    
+    
+    const displayNoStyle = {display: 'none'};
           
     return (
         <SuppliersCatalogueModelProvider>             
             <SupplierSelectField
                 onChange={handleSupplierChange}
                 supplierId={supplierId}
-            />
+            />            
             {
-                productSku 
-                    ?<ProductCard 
-                        productSku={productSku}
-                    />
-                    :<ProductsList                    
-                        supplierId={supplierId}
-                        onProductCardClick={handleProductsListCardClick}                    
-                    />                   
-            }
+                productSku &&             
+                 <ProductCard 
+                    productSku={productSku}
+                 />             
+            }                      
+            <div style={(productSku ? displayNoStyle : {})}>
+                <ProductsList                    
+                    supplierId={supplierId}
+                    onProductCardClick={handleProductsListCardClick}                    
+                />  
+            </div>
+           
         </SuppliersCatalogueModelProvider>
     );
    
