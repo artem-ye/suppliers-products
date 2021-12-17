@@ -16,16 +16,21 @@ const DropDownItem = ({handleDropDownListItemSelect, listItem, isActive=false}) 
     );
 }
 
-const SearchBar = ({options, defaultOption, onChange}) => {
-    // const [inputValuePrevState, setInputValuePrevState] = useState(defaultOption?.label || '');
-    // const [currentOption, setCurrentOption] = useState(defaultOption?.label || '');
-
+const SearchBar = ({options, defaultOption, onChange}) => {   
     const [inputValue, setInputValue] = useState(defaultOption?.label || '');
     const [dropdownItems, setDropdownItems] = useState(options || []);    
     const [showDropDown, setShowDropDown] = useState(false);
     
     useEffect(() => {
-        setInputValue(defaultOption?.label || '');
+        let isUnmounted = false;
+
+        if (!isUnmounted) {
+            setInputValue(defaultOption?.label || '');
+        }        
+
+        return () => {
+            isUnmounted = true;
+        }
     }, [defaultOption]);    
     
     // Helper functions    

@@ -1,11 +1,23 @@
 import React from 'react';
-import ProductImage from '../../productImage';
+import ImageLoader from '../../common/imageLoader';
+import Spinner from '../../common/spinner';
+// import ProductImage from '../../productImage';
 
-const ProductListCard = ({product, productImageURL}) => {    
+
+const ProductListCard = ({product, productImageURL, onClick}) => {    
+    const handleClick = (product) => {
+        onClick(product);
+    }
+
     return (            
-        <div className="card m-1 card-width">
-            <div className="h-100 m-1">
-                <ProductImage src={productImageURL}/>
+        <div className="card m-1 card-width" data-sku={product.sku} onClick={() => handleClick(product)}>
+            <div className="h-100 m-1">                
+                <ImageLoader 
+                    src={productImageURL} 
+                    className="img-fluid card-img-top" 
+                    alt="" 
+                    spinner={<Spinner/>}
+                />
             </div>
             <div className="card-body">
                 <h5 className="card-title">{product.sku}</h5>

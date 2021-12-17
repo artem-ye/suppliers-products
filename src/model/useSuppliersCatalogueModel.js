@@ -19,18 +19,16 @@ export const SuppliersCatalogueModelProvider = ({children}) => {
 
         modelNewState.init()
             .then((res) => {
-                if (isUnmounted) {
-                    return;
-                }
-                setModel(modelNewState);                
-                setIsLoading(false);                
+                if (!isUnmounted) {
+                    setModel(modelNewState);                
+                    setIsLoading(false);        
+                }                        
             })
             .catch(err => {
-                if (isUnmounted) {
-                    return;
-                }
-                setIsLoading(false);
-                setError(error);
+                if (!isUnmounted) {
+                    setIsLoading(false);
+                    setError(error);
+                }              
             });
         
         return () => {

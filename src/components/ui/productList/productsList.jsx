@@ -22,7 +22,7 @@ const SORT_ORDERS = {
     }    
 };
 
-const ProductsList = ({supplierId}) => {    
+const ProductsList = ({supplierId, onProductCardClick}) => {    
     const {model} = useSuppliersCatalogueModel();
 
     const [paginationCurrentPageNum, setPaginationCurrentPageNum] = useState(1);
@@ -122,7 +122,8 @@ const ProductsList = ({supplierId}) => {
                         <ProductListCard 
                             key={key}
                             product={product} 
-                            productImageURL={model.getProductPreviewImageURL(product)}                            
+                            productImageURL={model.getProductPreviewImageURL(product)}
+                            onClick={onProductCardClick}
                         />
                     ))
                 }

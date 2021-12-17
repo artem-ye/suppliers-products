@@ -1,12 +1,18 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
 import './App.css';
-import ProductsCatalogue from './layouts/productsCatalogues';
+import useConfig from './hooks/useConfig';
+import ProductsCatalogue from './layouts/productsCatalogue';
 
-function App() {         
+function App() {
+    const CONFIG = useConfig();
+    
     return (
         <>
-            <Route path="/:supplierId?" exact component={ProductsCatalogue}></Route>
+            <Switch>
+                <Route path={CONFIG.uriPath.catalogue+":supplierId?/:productSku?"} exact component={ProductsCatalogue}></Route>                
+                <Redirect to={CONFIG.uriPath.catalogue}/>                
+            </Switch>            
         </>
     );
 }
