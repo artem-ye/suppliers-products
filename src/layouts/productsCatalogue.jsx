@@ -33,11 +33,13 @@ const ProductsCatalogue = () => {
     const displayNoStyle = {display: 'none'};
           
     return (
-        <SuppliersCatalogueModelProvider>             
-            <SupplierSelectField
-                onChange={handleSupplierChange}
-                supplierId={supplierId}
-            />            
+        <SuppliersCatalogueModelProvider>   
+            <nav className="navbar sticky-top navbar-light bg-light">
+                <SupplierSelectField
+                    onChange={handleSupplierChange}
+                    supplierId={supplierId}
+                />            
+            </nav>          
             {
                 productSku &&             
                  <ProductCard 
